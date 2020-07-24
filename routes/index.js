@@ -107,7 +107,7 @@ router.post('/sign-in', async function(req,res,next){
 /*************** RECORD user's article in DB ***************/
 router.post('/addarticle', async function(req,res,next){
 
-  console.log(req.body)
+  // console.log(req.body)
 
   // check si l'utilisateur est loggué
 
@@ -129,6 +129,38 @@ router.post('/addarticle', async function(req,res,next){
       })
       var userSaved = await user.save()
       res.json({succes: true, articles: userSaved.articles})
+  }
+})
+
+
+
+/*************** REMOVE user's article from DB ***************/
+router.post('/removearticle', async function(req,res,next){
+  console.log(req.body)
+  // check si l'utilisateur est loggué
+  var user = await userModel.findOne( {
+    token: req.body.userToken
+  })
+
+  if (!user) {
+    res.json({succes: false, error: 'user must be logged'})
+  } else {
+    console.log('log de utilisateur ok')
+    user.articles.title(req.body.title).remove()
+    var userSaved = await user.save()
+    res.json({succes: true, articles: userSaved.articles})
+
+      // user.articles.push( {
+      //   author: req.body.articleAutor,
+      //   content: req.body.articleContent,
+      //   description: req.body.articleDescription,
+      //   title: req.body.articleTitle,
+      //   url: req.body.articleUrl,
+      //   urlToImage: req.body.articleImg,
+      //   language: req.body.articleLanguage
+      // })
+      // var userSaved = await user.save()
+      // res.json({succes: true, articles: userSaved.articles})
   }
 })
 
