@@ -42,6 +42,16 @@ function ScreenArticlesBySource(props) {
     setVisible(false)
   }
 
+  console.log(props.selectedLang)
+  // enregistrer un article dans la base de donnée
+  const addArticleToDb = async (article) => {
+    await fetch('/addarticle', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `userToken=${props.token}&articleAuthor=${article.author}&articleContent=${article.content}&articleDescription=${article.description}&articleTitle=${article.title}&articleUrl=${article.url}&articleImg=${article.urlToImage}`
+    })
+  }
+
   return (
     <div>
          
@@ -69,7 +79,7 @@ function ScreenArticlesBySource(props) {
                   }
                   actions={[
                       <Icon type="read" key="ellipsis2" onClick={() => showModal(article.title,article.content)} />,
-                      <Icon type="like" key="ellipsis" onClick={()=> {props.addToWishList(article)}} />
+                      <Icon type="like" key="ellipsis" onClick={()=> { addArticleToDb(article); props.addToWishList(article)} }  />
                   ]}
                   >
 
@@ -104,6 +114,11 @@ function ScreenArticlesBySource(props) {
   );
 }
 
+function mapStateToProps(state){
+  return {selectedLang: state.selectedLang,
+          token: state.token}
+}
+
 function mapDispatchToProps(dispatch){
   return {
     addToWishList: function(article){
@@ -115,6 +130,6 @@ function mapDispatchToProps(dispatch){
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(ScreenArticlesBySource)

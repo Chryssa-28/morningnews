@@ -35,6 +35,7 @@ function ScreenMyArticles(props) {
   if(props.myArticles === 0){
     noArticles = <div style={{marginTop:"30px"}}>No Articles</div>
   }
+  console.log(props.myArticles)
 
   return (
     <div>
@@ -46,11 +47,11 @@ function ScreenMyArticles(props) {
             {noArticles}
 
             <div className="Card">
-    
 
             {props.myArticles.map((article,i) => (
+              
                 <div key={i} style={{display:'flex',justifyContent:'center'}}>
-
+                  
                   <Card
                     
                     style={{ 

@@ -11,7 +11,7 @@ var encBase64 = require('crypto-js/enc-base64')
 var userModel = require('../models/users')
 var langModel = require('../models/languages')
 
-
+/*************** SIGN UP ***************/
 router.post('/sign-up', async function(req,res,next){
 
   var error = []
@@ -59,6 +59,10 @@ router.post('/sign-up', async function(req,res,next){
   res.json({result, saveUser, error, token})
 })
 
+
+
+
+/*************** SIGN IN ***************/
 router.post('/sign-in', async function(req,res,next){
 
   var result = false
@@ -101,6 +105,7 @@ router.post('/sign-in', async function(req,res,next){
 })
 
 
+
 router.post('/languages', async function(req,res,next){
   
   var newLang = new langModel({
@@ -112,4 +117,41 @@ router.post('/languages', async function(req,res,next){
   res.json({saveLang})
 })
 
+
+/*************** RECORD user's article in DB ***************/
+router.post('/addarticle', async function(req,res,next){
+
+  console.log(req.body)
+
+  // check si l'utilisateur est loggué
+
+  var user = await userModel.findOne( {
+    token: req.body.userToken
+  })
+
+  if (!user) {
+    res.json({succes: false, error: 'user must be logged'})
+  } else {
+      user.articles.push( {
+        author: req.body.articleAutor,
+        content: req.body.articleContent,
+        description: req.body.articleDescription,
+        title: req.body.articleTitle,
+        url: req.body.articleUrl,
+        urlToImage: req.body.articleImg,
+        language: req.body.articleLanguage
+      })
+      var userSaved = await user.save()
+      res.json({succes: true, articles: userSaved.articles})
+  }
+})
+
+
+
+
+
+
+
+
+// keep this at the end
 module.exports = router;
