@@ -29,13 +29,25 @@ function ScreenSource(props) {
     APIResultsLoading()
   }, [selectedLang])
 
+  var saveLanguage = async () => {
+    
+    const data = await fetch('/languages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `languageFromFront=${selectedLang}`
+    })
+
+    const body = await data.json()
+
+  }
+
   return (
     <div>
         <Nav/>
        
        <div style={{display:'flex', justifyContent:'center', alignItems:'center'}} className="Banner">
-          <img style={{width:'40px', margin:'10px',cursor:'pointer'}} src='/images/fr.png' onClick={() => setSelectedLang('fr')} />
-          <img style={{width:'40px', margin:'10px',cursor:'pointer'}} src='/images/uk.png' onClick={() => setSelectedLang('en')} /> 
+          <img style={{width:'40px', margin:'10px',cursor:'pointer'}} src='/images/fr.png' onClick={() => {setSelectedLang('fr');saveLanguage()}} />
+          <img style={{width:'40px', margin:'10px',cursor:'pointer'}} src='/images/uk.png' onClick={() => {setSelectedLang('en');saveLanguage()}} /> 
         </div>
 
        <div className="HomeThemes">

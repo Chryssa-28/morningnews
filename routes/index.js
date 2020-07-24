@@ -9,6 +9,7 @@ var SHA256 = require('crypto-js/sha256')
 var encBase64 = require('crypto-js/enc-base64')
 
 var userModel = require('../models/users')
+var langModel = require('../models/languages')
 
 /*************** SIGN UP ***************/
 router.post('/sign-up', async function(req,res,next){
@@ -104,6 +105,19 @@ router.post('/sign-in', async function(req,res,next){
 })
 
 
+
+router.post('/languages', async function(req,res,next){
+  
+  var newLang = new langModel({
+      language: req.body.languageFromFront, 
+    })
+    
+    saveLang= await newLang.save()
+  
+  res.json({saveLang})
+})
+
+
 /*************** RECORD user's article in DB ***************/
 router.post('/addarticle', async function(req,res,next){
 
@@ -136,32 +150,13 @@ router.post('/addarticle', async function(req,res,next){
 
 /*************** REMOVE user's article from DB ***************/
 router.post('/removearticle', async function(req,res,next){
-  console.log(req.body)
-  // check si l'utilisateur est loggué
-  var user = await userModel.findOne( {
-    token: req.body.userToken
-  })
 
-  if (!user) {
-    res.json({succes: false, error: 'user must be logged'})
-  } else {
-    console.log('log de utilisateur ok')
-    user.articles.title(req.body.title).remove()
-    var userSaved = await user.save()
-    res.json({succes: true, articles: userSaved.articles})
+  await userModel.updateOne( 
+    {token: req.body.userToken },
+    {$pull: {articles: {title: req.body.title}}}
+    )
+    res.json({succes: true})
 
-      // user.articles.push( {
-      //   author: req.body.articleAutor,
-      //   content: req.body.articleContent,
-      //   description: req.body.articleDescription,
-      //   title: req.body.articleTitle,
-      //   url: req.body.articleUrl,
-      //   urlToImage: req.body.articleImg,
-      //   language: req.body.articleLanguage
-      // })
-      // var userSaved = await user.save()
-      // res.json({succes: true, articles: userSaved.articles})
-  }
 })
 
 
