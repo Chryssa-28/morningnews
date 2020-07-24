@@ -41,6 +41,20 @@ function ScreenSource(props) {
 
   }
 
+  // get user's wishlist from db
+  useEffect ( () => {
+    async function loadData () {
+      const rawResponse = await fetch(`/getarticles?token=${props.token}`)
+      var response = await rawResponse.json()
+      var listeArticles = response.articles
+      props.recordWishListFromDB(listeArticles)
+    }
+    loadData()
+
+  }, [])
+
+
+
   return (
     <div>
         <Nav/>
@@ -74,13 +88,18 @@ function ScreenSource(props) {
 }
 
 function mapStateToProps(state){
-  return {selectedLang: state.selectedLang}
+  return {selectedLang: state.selectedLang,
+          token: state.token}
 }
 
 function mapDispatchToProps(dispatch){
   return {
     changeLang: function(selectedLang){
       dispatch({type: 'changeLang', selectedLang: selectedLang})
+    },
+    recordWishListFromDB : function(array) {
+      dispatch({type: 'initArticle',
+        articlesFromDB: array })
     }
   }
 }

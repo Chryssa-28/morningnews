@@ -159,10 +159,17 @@ router.post('/removearticle', async function(req,res,next){
 
 })
 
-
-
-
-
+/*************** GET user's article from DB ***************/
+router.get('/getarticles/', async function(req,res,next){
+  var user = await userModel.findOne( {
+    token: req.query.token
+  })
+  if (!user) {
+    res.json({succes: false, error: 'user must be logged'})
+  } else {
+    res.json({succes: true, articles: user.articles})
+  }
+})
 
 
 

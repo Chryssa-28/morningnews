@@ -1,6 +1,8 @@
 export default function(wishList = [], action){
-
-    if(action.type === 'addArticle'){
+    if (action.type === 'initArticle') {
+        console.log(action.articlesFromDB)
+        return action.articlesFromDB
+    } else if (action.type === 'addArticle'){
         var wishListCopy = [...wishList]
 
         var findArticle = false
